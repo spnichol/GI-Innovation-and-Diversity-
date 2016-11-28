@@ -1,0 +1,60 @@
+---
+title: "Innovation_Diversity"
+author: "Steven Nichols"
+date: "November 27, 2016"
+output:
+  html_document: 
+    highlight: monochrome
+    keep_md: yes
+    number_sections: yes
+    theme: journal
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##read in DFs and combine diversity and innovation measures 
+
+```{r}
+
+library(MASS)
+library(psych)
+setwd("C:\\Users\\Steven\\Google Drive\\1. MOT\\1) Fall 2016\\2. Global Innovation\\Assignments\\Final Paper")
+
+diversity <- read.csv("diversity.csv")
+innovation <- read.csv("innovation.csv")
+head(diversity)
+
+
+innovation <- subset(innovation, select=c("Country.Economy", "Score..0.100.", "Rank", "Income", "Rank.1" ))
+innovation['Country'] <- innovation$Country.Economy
+master <- merge(diversity, innovation, by="Country")
+
+```
+
+##create separate subset for analysis of correlations
+
+```{r} 
+names(master)
+master['Score_Innovation'] <- master$Score..0.100.
+master['Score_Diversity'] <- master$weighted.index
+master['Gender'] <- master$gender
+master$gender <- NULL
+master$weighted.index <- NULL
+master$Score..0.100. <-NULL
+master['Income'] <- master$income
+head(master)
+diversity_breakdown <- subset(master, select=c("Gender", "Language", "Country.of.birth", "Age", "Part.time", "Education", "Income", "Sector", "Score_Innovation", "Score_Diversity"))
+
+d <- cor(diversity_breakdown)
+```
+
+#create visual correlation matrix to study intersection of diversity and innovation 
+
+```{r, echo=FALSE}
+library(corrplot)
+corrplot(d, method="pie")
+
+```
