@@ -21,12 +21,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(MASS)
 library(psych)
-setwd("C:\\Users\\Steven\\Google Drive\\1. MOT\\1) Fall 2016\\2. Global Innovation\\Assignments\\Final Paper")
+setwd("C:\\Users\\Steven\\Google Drive\\1. MOT\\1) Fall 2016\\2. Global Innovation\\Assignments\\Final Paper\\Data")
 
 diversity <- read.csv("diversity.csv")
 innovation <- read.csv("innovation.csv")
 head(diversity)
-
+head(innovation)
 
 innovation <- subset(innovation, select=c("Country.Economy", "Score..0.100.", "Rank", "Income", "Rank.1" ))
 innovation['Country'] <- innovation$Country.Economy
@@ -58,3 +58,7 @@ library(corrplot)
 corrplot(d, method="pie")
 
 ```
+
+```{r}
+
+head(master)
