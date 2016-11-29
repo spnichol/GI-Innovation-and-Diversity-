@@ -24,11 +24,11 @@ library(psych)
 setwd("C:\\Users\\Steven\\Google Drive\\1. MOT\\1) Fall 2016\\2. Global Innovation\\Assignments\\Final Paper\\Data")
 
 diversity <- read.csv("diversity.csv")
-innovation <- read.csv("innovation.csv")
+rinnovation <- read.csv("innovation.csv")
 head(diversity)
 head(innovation)
 
-innovation <- subset(innovation, select=c("Country.Economy", "Score..0.100.", "Rank", "Income", "Rank.1" ))
+innovation <- subset(innovation, select=c("Country.Economy", "Score..0.100.", "Rank", "Income", "Rank.1", "Region" ))
 innovation['Country'] <- innovation$Country.Economy
 master <- merge(diversity, innovation, by="Country")
 
@@ -41,14 +41,15 @@ names(master)
 master['Score_Innovation'] <- master$Score..0.100.
 master['Score_Diversity'] <- master$weighted.index
 master['Gender'] <- master$gender
-master$gender <- NULL
+
 master$weighted.index <- NULL
 master$Score..0.100. <-NULL
 master['Income'] <- master$income
 head(master)
 diversity_breakdown <- subset(master, select=c("Gender", "Language", "Country.of.birth", "Age", "Part.time", "Education", "Income", "Sector", "Score_Innovation", "Score_Diversity"))
-
+head(master)
 d <- cor(diversity_breakdown)
+d
 ```
 
 #create visual correlation matrix to study intersection of diversity and innovation 
@@ -61,4 +62,41 @@ corrplot(d, method="pie")
 
 ```{r}
 
-head(master)
+head(innovation)
+norway <- subset(innovation, Country == "Norway")
+norway
+norway_diversity <- subset(diversity, Country == "Norway")
+norway_diversity 
+innovation
+```
+
+##Analyze power distance as a predictor of innovation and diversity 
+
+```{r} 
+
+pd <- read.csv("pdi.csv")
+pd
+head(pd)
+div_innovation <- subset(master, select=c("Country", "Gender", "Language", "Country.of.birth", "Age", "Part.time", "Education", "Income", "Sector", "Score_Innovation", "Score_Diversity"))
+pd_innovation <- merge(pd, div_innovation, by="Country")
+head(pd_innovation)
+pd_cor <- pd_innovation
+pd_cor$Country <- NULL
+
+p <- cor(pd_cor)
+p
+corrplot(p, method="pie")
+
+AsianEconomies <- c("China", "Japan", "South Korea")
+WesternEconomies <- c("United States", "United Kingdom", "Germany")
+
+pd_innovation_Asia <- pd[pd$Country %in% AsianEconomies,]
+pd_innovation_West <- pd[pd$Country %in% WesternEconomies,]
+
+PDI_Asia_Avg <- (sum(pd_innovation_Asia$PDI))/nrow(pd_innovation_Asia)
+PDI_West_Avg <- (sum(pd_innovation_West$PDI))/nrow(pd_innovation_West)
+Asia_Avg
+West_Avg
+pd$PDI
+max(pd$PDI)
+min(pd$PDI)
